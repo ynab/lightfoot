@@ -1,0 +1,23 @@
+{
+  "name": "litefoot",
+  "version": "1.0.0",
+  "description": "Run your own tests in a real browser with selenium then stream the results out.",
+  "main": "index.js",
+  "bin": {
+    "litefoot": "bin/litefoot"
+  },
+  "scripts": {
+  },
+  "author": "Kyle Robinson Young <kyle@dontkry.com> (http://dontkry.com)",
+  "license": "MIT",
+  "dependencies": {
+    "leadfoot": "^1.1.1",
+    "subarg": "^1.0.0"
+  },
+  "keywords": [
+    "selenium",
+    "test",
+    "browser",
+    "stream"
+  ]
+}

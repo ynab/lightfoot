@@ -1,0 +1,33 @@
+#!/usr/bin/env node
+
+process.title = 'litefoot'
+
+var args = require('subarg')(process.argv.slice(2), {
+  alias: {
+    u: 'url',
+    b: 'browser',
+    s: 'sauce'
+  }
+})
+
+function done(code) {
+  litefoot.quit(function() {
+    process.exit(code || 0)
+  })
+}
+
+// Run the tests
+var litefoot = require('../')({
+  url: args.url,
+  browserName: args.browser,
+}).run(function(code) {
+  process.nextTick(function() {
+    done(code)
+  })
+})
+
+// Pipe to tap reporter
+litefoot.pipe(require('../reporters/tap')()).pipe(process.stdout)
+
+// Clean up on SIGINT
+process.on('SIGINT', done)
