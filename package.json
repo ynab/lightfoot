@@ -1,14 +1,14 @@
 {
-  "name": "litefoot",
+  "name": "lightfoot",
   "version": "1.0.0",
   "description": "Run your own tests in a real browser with selenium then stream the results out.",
   "main": "index.js",
   "bin": {
-    "litefoot": "bin/litefoot"
+    "lightfoot": "bin/lightfoot"
   },
   "scripts": {
   },
-  "author": "Kyle Robinson Young <kyle@dontkry.com> (http://dontkry.com)",
+  "author": "YouNeedABudget.com <opensource@youneedabudget.com> (http://youneedabudget.com)",
   "license": "MIT",
   "dependencies": {
     "leadfoot": "^1.1.1",

@@ -2,8 +2,8 @@ var Transform = require('stream').Transform
 var inherits = require('util').inherits
 var Server = require('leadfoot/Server')
 
-function Litefoot(cfg) {
-  if (!(this instanceof Litefoot)) return new Litefoot(cfg)
+function Lightfoot(cfg) {
+  if (!(this instanceof Lightfoot)) return new Lightfoot(cfg)
   cfg = cfg || {};
   cfg.objectMode = true
   Transform.call(this, cfg)
@@ -13,7 +13,7 @@ function Litefoot(cfg) {
   this.url = cfg.url
   this.seleniumUrl = cfg.seleniumUrl || 'http://localhost:4444/wd/hub'
   this.browserName = cfg.browserName || 'chrome'
-  this.varName = cfg.varName || 'window.NOTIFY_LITEFOOT'
+  this.varName = cfg.varName || 'window.NOTIFY_LIGHTFOOT'
   this.timeout = cfg.timeout || 20 * 60 * 1000
   this._emitted = []
   this._done = false
@@ -21,10 +21,10 @@ function Litefoot(cfg) {
   this._server = null
   this._runCallback = null
 }
-module.exports = Litefoot
-inherits(Litefoot, Transform)
+module.exports = Lightfoot
+inherits(Lightfoot, Transform)
 
-Litefoot.prototype.run = function(done) {
+Lightfoot.prototype.run = function(done) {
   var self = this
 
   self._done = false
@@ -71,7 +71,7 @@ Litefoot.prototype.run = function(done) {
   return self
 }
 
-Litefoot.prototype.quit = function(done) {
+Lightfoot.prototype.quit = function(done) {
   var self = this
   if (self._server && self._session) {
     self._server.deleteSession(self._session.sessionId).then(done)
@@ -81,7 +81,7 @@ Litefoot.prototype.quit = function(done) {
   return self
 }
 
-Litefoot.prototype._transform = function(chunk, encoding, done) {
+Lightfoot.prototype._transform = function(chunk, encoding, done) {
   var self = this
 
   chunk = chunk || {}

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-process.title = 'litefoot'
+process.title = 'lightfoot'
 
 var args = require('subarg')(process.argv.slice(2), {
   alias: {
@@ -11,13 +11,13 @@ var args = require('subarg')(process.argv.slice(2), {
 })
 
 function done(code) {
-  litefoot.quit(function() {
+  lightfoot.quit(function() {
     process.exit(code || 0)
   })
 }
 
 // Run the tests
-var litefoot = require('../')({
+var lightfoot = require('../')({
   url: args.url,
   browserName: args.browser,
 }).run(function(code) {
@@ -27,7 +27,7 @@ var litefoot = require('../')({
 })
 
 // Pipe to tap reporter
-litefoot.pipe(require('../reporters/tap')()).pipe(process.stdout)
+lightfoot.pipe(require('../reporters/tap')()).pipe(process.stdout)
 
 // Clean up on SIGINT
 process.on('SIGINT', done)

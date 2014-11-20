@@ -1,13 +1,13 @@
-# litefoot
+# lightfoot
 
 Run your own tests in a real browser with selenium then stream the results out. Uses [leadfoot](https://github.com/theintern/leadfoot) under the hood.
 
-[![NPM](https://nodei.co/npm/litefoot.png?downloads=true)](https://nodei.co/npm/litefoot/)
+[![NPM](https://nodei.co/npm/lightfoot.png?downloads=true)](https://nodei.co/npm/lightfoot/)
 
 ## install
 
 ```shell
-npm install litefoot --save-dev
+npm install lightfoot --save-dev
 ```
 
 ## usage
@@ -21,42 +21,42 @@ Add a `test` target to your `scripts` of your `package.json`:
   "name": "myapp",
   "version": "0.1.0",
   "scripts": {
-    "test": "litefoot --url=http://localhost:3000/test.html"
+    "test": "lightfoot --url=http://localhost:3000/test.html"
   },
   "devDependencies": {
-    "litefoot": "^1.0.0"
+    "lightfoot": "^1.0.0"
   }
 }
 ```
 
 Then run the command `npm test` to run your test URL in a real browser via selenium.
 
-### notifying litefoot
+### notifying lightfoot
 
-Your test suite can communicate with litefoot using a global variable stack: `window.NOTIFY_LITEFOOT`
+Your test suite can communicate with lightfoot using a global variable stack: `window.NOTIFY_LIGHTFOOT`
 
 When your tests are done, push an object to the stack:
 
 ```js
-window.NOTIFY_LITEFOOT.push({ type: 'done', passed: 2, failed: 1 })
+window.NOTIFY_LIGHTFOOT.push({ type: 'done', passed: 2, failed: 1 })
 ```
 
 An example adapter if you're using QUnit:
 
 ```js
-window.NOTIFY_LITEFOOT = []
-function notifyLitefoot(type, payload) {
+window.NOTIFY_LIGHTFOOT = []
+function notifyLightfoot(type, payload) {
   payload.type = type
   payload.id = type + Date.now()
-  window.NOTIFY_LITEFOOT.push(payload)
+  window.NOTIFY_LIGHTFOOT.push(payload)
 }
-QUnit.begin(function(data) { notifyLitefoot('begin', data) })
-QUnit.done(function(data) { notifyLitefoot('done', data) })
-QUnit.testDone(function(data) { notifyLitefoot('testDone', data) })
-QUnit.log(function(data) { notifyLitefoot('log', data) })
+QUnit.begin(function(data) { notifyLightfoot('begin', data) })
+QUnit.done(function(data) { notifyLightfoot('done', data) })
+QUnit.testDone(function(data) { notifyLightfoot('testDone', data) })
+QUnit.log(function(data) { notifyLightfoot('log', data) })
 ```
 
-and now litefoot will know and report more info about the lifecycle of your test suite.
+and now lightfoot will know and report more info about the lifecycle of your test suite.
 
 ### using with sauce labs
 
@@ -65,27 +65,27 @@ and now litefoot will know and report more info about the lifecycle of your test
 ## api usage
 
 ```js
-// Create an instance of litefoot
-var litefoot = require('litefoot')({
+// Create an instance of lightfoot
+var lightfoot = require('lightfoot')({
   url: 'http://localhost:3000/test.html',
   browserName: 'firefox',
-  varName: 'window.NOTIFY_LITEFOOT',
+  varName: 'window.NOTIFY_LIGHTFOOT',
 })
 
 // Open a session and run the tests
-litefoot.run(function(code) {
-  litefoot.quit(function() {
+lightfoot.run(function(code) {
+  lightfoot.quit(function() {
     process.exit(code || 0)
   })
 })
 
 // Pipe to built in tap reporter or your own reporter
-litefoot.pipe(require('litefoot/reporters/tap')()).pipe(process.stdout)
+lightfoot.pipe(require('lightfoot/reporters/tap')()).pipe(process.stdout)
 ```
 
 ## Release History
 * 1.0.0 - Initial release
 
 ## License
-Copyright (c) 2014 Kyle Robinson Young  
+Copyright (c) 2014 YouNeedABudget.com  
 Licensed under the MIT license.
