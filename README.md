@@ -47,7 +47,6 @@ An example adapter if you're using QUnit:
 window.NOTIFY_LIGHTFOOT = []
 function notifyLightfoot(type, payload) {
   payload.type = type
-  payload.id = type + Date.now()
   window.NOTIFY_LIGHTFOOT.push(payload)
 }
 QUnit.begin(function(data) { notifyLightfoot('begin', data) })
