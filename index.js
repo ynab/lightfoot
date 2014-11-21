@@ -102,7 +102,6 @@ Lightfoot.prototype._transform = function(chunk, encoding, done) {
       } else {
         if (typeof self._runCallback === 'function') self._runCallback(0)
       }
-      done()
     })
   } else {
     self.push(chunk)
