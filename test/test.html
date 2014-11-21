@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>tests</title>
+</head>
+<body>
+  <div id="output"></div>
+  <script>
+  window.NOTIFY_LIGHTFOOT = []
+  var messages = [
+    { type: 'begin', totalTests: 2 },
+    { type: 'testDone', name: 'a test test', failed: 0, passed: 5, total: 5, runtime: 100 },
+    { type: 'log', result: true, message: 'assertion has passed', name: 'should work' },
+    { type: 'testDone', name: 'a test part two', failed: 0, passed: 5, total: 5, runtime: 100 },
+    { type: 'done', passed: 10, failed: 0 },
+  ]
+  function sendMessage() {
+    var message = messages.shift()
+    if (!message) return
+    message.id = message.type + Date.now()
+    document.getElementById('output').innerHTML += JSON.stringify(message) + '<br/>'
+    window.NOTIFY_LIGHTFOOT.push(message)
+    setTimeout(sendMessage, 100)
+  }
+  sendMessage()
+  </script>
+</body>
+</html>

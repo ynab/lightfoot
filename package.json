@@ -7,12 +7,17 @@
     "lightfoot": "bin/lightfoot"
   },
   "scripts": {
+    "test": "node test/test.js"
   },
   "author": "YouNeedABudget.com <opensource@youneedabudget.com> (http://youneedabudget.com)",
   "license": "MIT",
   "dependencies": {
     "leadfoot": "^1.1.1",
     "subarg": "^1.0.0"
+  },
+  "devDependencies": {
+    "st": "^0.5.2",
+    "tape": "^3.0.3"
   },
   "keywords": [
     "selenium",
