@@ -58,10 +58,6 @@ QUnit.log(function(data) { notifyLightfoot('log', data) })
 
 and now lightfoot will know and report more info about the lifecycle of your test suite.
 
-### using with sauce labs
-
-> TODO: instructions coming soon
-
 ## api usage
 
 ```js
@@ -82,6 +78,25 @@ lightfoot.run(function(code) {
 // Pipe to built in tap reporter or your own reporter
 lightfoot.pipe(require('lightfoot/reporters/tap')()).pipe(process.stdout)
 ```
+
+### using with sauce labs
+
+Install and run [Sauce Connect](https://docs.saucelabs.com/reference/sauce-connect/)
+
+Specify the Sauce Labs Selenium web driver URL with your username and access key:
+
+```js
+require('lightfoot')({
+  url: 'http://localhost:3000/test.html',
+  seleniumUrl: 'http://username:accessKey@ondemand.saucelabs.com:80/wd/hub',
+}).run(function(code) {
+  lightfoot.quit(function() {
+    process.exit(code || 0)
+  })
+})
+```
+
+Now through all kinds of mad science, your tests served locally are ran in a real browser at Sauce Labs and reported to your terminal.
 
 ## Release History
 * 1.0.0 - Initial release
