@@ -70,9 +70,7 @@ var lightfoot = require('lightfoot')({
 
 // Open a session and run the tests
 lightfoot.run(function(code) {
-  lightfoot.quit(function() {
-    process.exit(code || 0)
-  })
+  process.exit(code || 0)
 })
 
 // Pipe to built in tap reporter or your own reporter
