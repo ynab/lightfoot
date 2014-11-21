@@ -10,19 +10,13 @@ var args = require('subarg')(process.argv.slice(2), {
   }
 })
 
-function done(code) {
-  lightfoot.quit(function() {
-    process.exit(code || 0)
-  })
-}
-
 // Run the tests
 var lightfoot = require('../')({
   url: args.url,
   browserName: args.browser,
 }).run(function(code) {
   process.nextTick(function() {
-    done(code)
+    process.exit(code || 0)
   })
 })
 
@@ -30,4 +24,8 @@ var lightfoot = require('../')({
 lightfoot.pipe(require('../reporters/tap')()).pipe(process.stdout)
 
 // Clean up on SIGINT
-process.on('SIGINT', done)
+process.on('SIGINT', function() {
+  lightfoot.quit(function() {
+    process.exit(1)
+  })
+})

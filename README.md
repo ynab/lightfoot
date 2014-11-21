@@ -90,9 +90,7 @@ require('lightfoot')({
   url: 'http://localhost:3000/test.html',
   seleniumUrl: 'http://username:accessKey@ondemand.saucelabs.com:80/wd/hub',
 }).run(function(code) {
-  lightfoot.quit(function() {
-    process.exit(code || 0)
-  })
+  process.exit(code || 0)
 })
 ```
 
