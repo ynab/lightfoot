@@ -97,12 +97,14 @@ Lightfoot.prototype._transform = function(chunk, encoding, done) {
   if (chunk.type === 'done') {
     process.nextTick(function() {
       self.push(chunk)
-      if (chunk.failed > 0) {
-        if (typeof self._runCallback === 'function') self._runCallback(1)
-      } else {
-        if (typeof self._runCallback === 'function') self._runCallback(0)
-      }
-      self.quit(done)
+      self.quit(function() {
+        if (chunk.failed > 0) {
+          if (typeof self._runCallback === 'function') self._runCallback(1)
+        } else {
+          if (typeof self._runCallback === 'function') self._runCallback(0)
+        }
+        done()
+      })
     })
   } else {
     self.push(chunk)
