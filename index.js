@@ -15,11 +15,11 @@ function Lightfoot(cfg) {
   this.browserName = cfg.browserName || 'chrome'
   this.varName = cfg.varName || 'window.NOTIFY_LIGHTFOOT'
   this.timeout = cfg.timeout || 20 * 60 * 1000
-  this._emitted = []
   this._done = false
   this._session = null
   this._server = null
   this._runCallback = null
+  this._pointer = 0
 }
 module.exports = Lightfoot
 inherits(Lightfoot, Transform)
@@ -56,9 +56,10 @@ Lightfoot.prototype.run = function(done) {
         }).join('\n'))
         return session.execute('return ' + self.varName).then(function(results) {
           if (!Array.isArray(results)) results = [results]
-          for (var i = 0; i < results.length; i++) {
+          for (var i = self._pointer; i < results.length; i++) {
             if (results[i]) self.write(results[i])
           }
+          self._pointer = results.length
         })
       }).finally(function() {
         if (!self._done) process.nextTick(pollForResult)
@@ -90,13 +91,10 @@ Lightfoot.prototype.quit = function(done) {
 Lightfoot.prototype._transform = function(chunk, encoding, done) {
   var self = this
 
+  if (self._done) return done()
+
   chunk = chunk || {}
   chunk.type = chunk.type || 'log'
-  chunk.id = chunk.id || chunk.type + Date.now()
-
-  // Avoid processing duplicate chunk.id
-  if (self._done || self._emitted.indexOf(chunk.id) !== -1) return done()
-  self._emitted.push(chunk.id)
 
   if (chunk.type === 'done') {
     process.nextTick(function() {

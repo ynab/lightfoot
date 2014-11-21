@@ -18,7 +18,6 @@
   function sendMessage() {
     var message = messages.shift()
     if (!message) return
-    message.id = message.type + Date.now()
     document.getElementById('output').innerHTML += JSON.stringify(message) + '<br/>'
     window.NOTIFY_LIGHTFOOT.push(message)
     setTimeout(sendMessage, 100)
