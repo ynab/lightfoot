@@ -44,9 +44,8 @@ Lightfoot.prototype.run = function(done) {
     // Timeout for the entire test suite
     self._timeoutInterval = setTimeout(function () {
       self.write({ type: 'timeout', message: 'Tests have timed out after ' + self.timeout + 'ms' })
-      self._server.deleteSession(session.sessionId).then(function() {
-        self._done = true
-        done(1)
+      self.quit(function() {
+        if (typeof done === 'function') done(1)
       })
     }, self.timeout)
 
@@ -78,7 +77,7 @@ Lightfoot.prototype.quit = function(done) {
     self._runCallback = null
     self._done = true
     self.end()
-    done()
+    if (typeof done === 'function') done()
   }
   if (self._server && self._session) {
     self._server.deleteSession(self._session.sessionId).then(cb)
@@ -103,9 +102,9 @@ Lightfoot.prototype._transform = function(chunk, encoding, done) {
     process.nextTick(function() {
       self.push(chunk)
       if (chunk.failed > 0) {
-        self._runCallback(1)
+        if (typeof self._runCallback === 'function') self._runCallback(1)
       } else {
-        self._runCallback(0)
+        if (typeof self._runCallback === 'function') self._runCallback(0)
       }
       self.quit(done)
     })
