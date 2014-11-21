@@ -94,10 +94,11 @@ require('lightfoot')({
 Now through all kinds of mad science, your tests served locally are ran in a real browser at Sauce Labs and reported to your terminal.
 
 ## Release History
+* 1.2.0 - Do not call `quit()` automatically any more to allow for async clean up. User must call `quit()`
 * 1.1.1 - Ensure quit is called before runCallback
 * 1.1.0 - Fixes to prevent runner from hanging. id is no longer required. Fixes to tap reporter. session and sessionId is exposed. quit is called upon the end automatically now.
 * 1.0.0 - Initial release
 
 ## License
-Copyright (c) 2014 YouNeedABudget.com  
+Copyright (c) 2014 YouNeedABudget.com
 Licensed under the MIT license.
