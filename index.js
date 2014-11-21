@@ -33,7 +33,7 @@ Lightfoot.prototype.run = function(done) {
   self._server = new Server(self.seleniumUrl)
   self._server.createSession({
     browserName: self.browserName,
-    loggingPrefs: { browser: 'ALL' }
+    loggingPrefs: { browser: 'ALL' },
   }).then(function(session) {
     self.session = session
     self.sessionId = session.sessionId
@@ -97,14 +97,12 @@ Lightfoot.prototype._transform = function(chunk, encoding, done) {
   if (chunk.type === 'done') {
     process.nextTick(function() {
       self.push(chunk)
-      self.quit(function() {
-        if (chunk.failed > 0) {
-          if (typeof self._runCallback === 'function') self._runCallback(1)
-        } else {
-          if (typeof self._runCallback === 'function') self._runCallback(0)
-        }
-        done()
-      })
+      if (chunk.failed > 0) {
+        if (typeof self._runCallback === 'function') self._runCallback(1)
+      } else {
+        if (typeof self._runCallback === 'function') self._runCallback(0)
+      }
+      done()
     })
   } else {
     self.push(chunk)
