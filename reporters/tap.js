@@ -12,41 +12,46 @@ module.exports = TapReporter
 inherits(TapReporter, Transform)
 
 TapReporter.prototype._transform = function(chunk, encoding, done) {
+  var self = this
   chunk = chunk || {}
+
+  function log(msg) {
+    self.push(msg + '\n')
+  }
+
   switch (chunk.type) {
     case 'begin':
-      this.push('\nTAP version 13\n')
+      log('\nTAP version 13')
       if (chunk.totalTests) {
-        this.push('1..' + chunk.totalTests + '\n')
+        log('1..' + chunk.totalTests)
         this._printedTotalTests = true
       }
       break;
     case 'testStart':
-      this.push('# ' + chunk.name + '\n')
+      log('# ' + chunk.name)
       break;
     case 'log':
       var msg = ''
       msg += (chunk.result) ? 'ok ' : 'not ok '
       msg += ++this._testNum
       msg += ' ' + (chunk.message || '(unnamed assert)')
-      this.push(msg + '\n')
+      log(msg)
       if (!chunk.result) {
-        msg = '  ---\n'
-        if (chunk.expected) msg += '    expected: ' + chunk.expected + '\n'
-        if (chunk.actual) msg += '    actual: ' + chunk.actual + '\n'
-        msg += '  ...\n'
-        this.push(msg + '\n')
+        log('  ---')
+        if (chunk.expected) log('    expected: ' + chunk.expected)
+        if (chunk.actual) log('    actual: ' + chunk.actual)
+        log('  ...')
       }
       break;
     case 'done':
-      this.push('\n')
+      log('')
       if (!this._printedTotalTests) {
-        this.push('1..' + this._testNum + '\n')
+        log('1..' + this._testNum)
       }
-      this.push('# tests ' + (chunk.total || this._testNum) + '\n')
-      if (chunk.passed != null) this.push('# pass ' + chunk.passed + '\n')
-      if (chunk.failed != null) this.push('# fail ' + chunk.failed + '\n')
-      this.push('\n')
+      log('# tests ' + (chunk.total || this._testNum))
+      if (chunk.passed != null) log('# pass ' + chunk.passed)
+      if (chunk.failed != null) log('# fail ' + chunk.failed)
+      log('')
       break;
   }
   done()
