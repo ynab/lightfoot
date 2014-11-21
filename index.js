@@ -36,10 +36,7 @@ Lightfoot.prototype.run = function(done) {
     loggingPrefs: { browser: 'ALL' },
   }).then(function(session) {
     self._session = session
-    var exitcode = 0
-    var skipped = 0
     var lastConsoleLogs = []
-    var lastAssertions = []
 
     // Timeout for the entire test suite
     self._timeoutInterval = setTimeout(function () {
