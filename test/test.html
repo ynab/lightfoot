@@ -10,9 +10,10 @@
   window.NOTIFY_LIGHTFOOT = []
   var messages = [
     { type: 'begin', totalTests: 2 },
-    { type: 'testDone', name: 'a test test', failed: 0, passed: 5, total: 5, runtime: 100 },
+    { type: 'testStart', name: 'a test test' },
     { type: 'log', result: true, message: 'assertion has passed', name: 'should work' },
-    { type: 'testDone', name: 'a test part two', failed: 0, passed: 5, total: 5, runtime: 100 },
+    { type: 'testStart', name: 'another test' },
+    { type: 'log', result: true, message: 'assertion has passed too', name: 'should work too' },
     { type: 'done', passed: 10, failed: 0 },
   ]
   function sendMessage() {

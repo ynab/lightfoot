@@ -28,8 +28,8 @@ test('should run tests', function(t) {
     result += data.toString()
   })
   lightfoot.on('end', function() {
-    t.ok(result.indexOf('ok 1 - a test test') !== -1, 'first test reported')
-    t.ok(result.indexOf('ok 2 - a test part two') !== -1, 'second test reported')
+    t.ok(result.indexOf('ok 1 assertion has passed') !== -1, 'first test reported')
+    t.ok(result.indexOf('ok 2 assertion has passed too') !== -1, 'second test reported')
     server.close()
   })
 })
