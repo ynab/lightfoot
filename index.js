@@ -62,7 +62,7 @@ Lightfoot.prototype.run = function(done) {
           }
         })
       }).finally(function() {
-        process.nextTick(pollForResult)
+        if (!self._done) process.nextTick(pollForResult)
       })
     }
     session.get(self.url).then(pollForResult)
@@ -73,10 +73,17 @@ Lightfoot.prototype.run = function(done) {
 
 Lightfoot.prototype.quit = function(done) {
   var self = this
-  if (self._server && self._session) {
-    self._server.deleteSession(self._session.sessionId).then(done)
-  } else {
+  function cb() {
+    clearTimeout(self._timeoutInterval)
+    self._runCallback = null
+    self._done = true
+    self.end()
     done()
+  }
+  if (self._server && self._session) {
+    self._server.deleteSession(self._session.sessionId).then(cb)
+  } else {
+    cb()
   }
   return self
 }
@@ -100,10 +107,7 @@ Lightfoot.prototype._transform = function(chunk, encoding, done) {
       } else {
         self._runCallback(0)
       }
-      clearTimeout(self._timeoutInterval)
-      self._runCallback = null
-      self._done = true
-      done()
+      self.quit(done)
     })
   } else {
     self.push(chunk)
