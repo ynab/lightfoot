@@ -15,8 +15,8 @@ function Lightfoot(cfg) {
   this.browserName = cfg.browserName || 'chrome'
   this.varName = cfg.varName || 'window.NOTIFY_LIGHTFOOT'
   this.timeout = cfg.timeout || 20 * 60 * 1000
+  this.session = null
   this._done = false
-  this._session = null
   this._server = null
   this._runCallback = null
   this._pointer = 0
@@ -33,9 +33,10 @@ Lightfoot.prototype.run = function(done) {
   self._server = new Server(self.seleniumUrl)
   self._server.createSession({
     browserName: self.browserName,
-    loggingPrefs: { browser: 'ALL' },
+    loggingPrefs: { browser: 'ALL' }
   }).then(function(session) {
-    self._session = session
+    self.session = session
+    self.sessionId = session.sessionId
     var lastConsoleLogs = []
 
     // Timeout for the entire test suite
@@ -77,8 +78,8 @@ Lightfoot.prototype.quit = function(done) {
     self.end()
     if (typeof done === 'function') done()
   }
-  if (self._server && self._session) {
-    self._server.deleteSession(self._session.sessionId).then(cb)
+  if (self._server && self.session) {
+    self._server.deleteSession(self.sessionId).then(cb)
   } else {
     cb()
   }
