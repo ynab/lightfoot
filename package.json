@@ -12,7 +12,9 @@
   "author": "YouNeedABudget.com <opensource@youneedabudget.com> (http://youneedabudget.com)",
   "license": "MIT",
   "dependencies": {
+    "chalk": "^0.5.1",
     "leadfoot": "^1.1.1",
+    "pretty-ms": "^1.0.0",
     "subarg": "^1.0.0"
   },
   "devDependencies": {
