@@ -43,8 +43,8 @@ PrettyReporter.prototype._transform = function(chunk, encoding, done) {
             msg += ', expected: ' + assert.expected + ', but was: ' + assert.actual
           }
           if (assert.source) msg += '\n' + assert.source
+          msg += '\n'
         })
-        msg += '\n'
         msg += chalk.cyan('START: ' + new Array(80).join('=')) + '\n'
         msg += lastConsoleLogs.filter(function (log) {
           return !!log
