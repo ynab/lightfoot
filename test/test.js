@@ -20,16 +20,16 @@ test('should run tests', function(t) {
   ).listen(PORT)
 
   var reporter = new Reporter()
-  var lightfoot = new Lightfoot(cfg).run()
-  lightfoot.pipe(reporter)
-
   var result = ''
-  reporter.on('data', function(data) {
-    result += data.toString()
-  })
-  lightfoot.on('end', function() {
+  var lightfoot = new Lightfoot(cfg).run(function() {
     t.ok(result.indexOf('ok 1 assertion has passed') !== -1, 'first test reported')
     t.ok(result.indexOf('ok 2 assertion has passed too') !== -1, 'second test reported')
-    server.close()
+    lightfoot.quit(function() {
+      server.close()
+    })
+  })
+  lightfoot.pipe(reporter)
+  reporter.on('data', function(data) {
+    result += data.toString()
   })
 })
