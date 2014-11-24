@@ -9,6 +9,10 @@
   "scripts": {
     "test": "node test/test.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/ynab/lightfoot.git"
+  },
   "author": "YouNeedABudget.com <opensource@youneedabudget.com> (http://youneedabudget.com)",
   "license": "MIT",
   "dependencies": {
