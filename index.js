@@ -65,6 +65,9 @@ Lightfoot.prototype.run = function(done) {
     }
     session.get(self.url).then(pollForResult)
   })
+  .catch(function(err) {
+    self.write({ type: 'error', error: err })
+  })
 
   return self
 }

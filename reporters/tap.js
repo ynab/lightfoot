@@ -43,6 +43,9 @@ TapReporter.prototype._transform = function(chunk, encoding, done) {
         log('  ...')
       }
       break;
+    case 'error':
+      log('\n# ERROR: ' + chunk.error.message + '\n')
+      break
     case 'done':
       log('')
       if (!this._printedTotalTests) {

@@ -72,6 +72,14 @@ PrettyReporter.prototype._transform = function(chunk, encoding, done) {
     case 'log':
       lastAssertions.push(chunk)
       break
+    case 'error':
+      msg += '\n'
+      msg += chalk.inverse.red(new Array(10).join('!'))
+      msg += chalk.inverse.red(' ' + chunk.error.message + ' ')
+      msg += chalk.inverse.red(new Array(10).join('!'))
+      msg += '\n'
+      log(msg)
+      break
     case 'done':
       msg += '\n'
       if (chunk.failed > 0) {
