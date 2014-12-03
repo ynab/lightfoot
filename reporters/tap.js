@@ -6,7 +6,9 @@ function TapReporter() {
   var cfg = {objectMode: true}
   Transform.call(this, cfg)
   this._testNum = 0
-  this._printedTotalTests = false
+  this._multiple = 0
+  this._multipleCounter = 0
+  this._printedBegin = false
 }
 module.exports = TapReporter
 inherits(TapReporter, Transform)
@@ -20,16 +22,22 @@ TapReporter.prototype._transform = function(chunk, encoding, done) {
   }
 
   switch (chunk.type) {
+    case 'multiple':
+      this._multiple = chunk.amount
+      this._multipleCounter = 0
+      break
     case 'begin':
+      if (this._printedBegin) break
+      this._printedBegin = true
       log('\nTAP version 13')
-      if (chunk.totalTests) {
-        log('1..' + chunk.totalTests)
-        this._printedTotalTests = true
-      }
-      break;
+      break
     case 'testStart':
-      log('# ' + chunk.name)
-      break;
+      var msg = '# ' + chunk.name
+      if (chunk.capabilities && chunk.capabilities.browserName) {
+        msg += ' in ' + chunk.capabilities.browserName
+      }
+      log(msg)
+      break
     case 'log':
       var msg = ''
       msg += (chunk.result) ? 'ok ' : 'not ok '
@@ -42,20 +50,22 @@ TapReporter.prototype._transform = function(chunk, encoding, done) {
         if (chunk.actual) log('    actual: ' + chunk.actual)
         log('  ...')
       }
-      break;
+      break
     case 'error':
       log('\n# ERROR: ' + chunk.error.message + '\n')
       break
     case 'done':
-      log('')
-      if (!this._printedTotalTests) {
+      ++this._multipleCounter
+      if (this._multiple === this._multipleCounter) {
+        log('')
         log('1..' + this._testNum)
+        log('# tests ' + (chunk.total || this._testNum))
+        if (chunk.passed != null) log('# pass ' + chunk.passed)
+        if (chunk.failed != null) log('# fail ' + chunk.failed)
+        log('')
       }
-      log('# tests ' + (chunk.total || this._testNum))
-      if (chunk.passed != null) log('# pass ' + chunk.passed)
-      if (chunk.failed != null) log('# fail ' + chunk.failed)
-      log('')
-      break;
+      break
   }
   done()
 }
+

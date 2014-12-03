@@ -8,6 +8,9 @@ function PrettyReporter(verbose) {
   if (!(this instanceof PrettyReporter)) return new PrettyReporter(verbose)
   var cfg = {objectMode: true}
   Transform.call(this, cfg)
+  this._multiple = 0
+  this._multipleCounter = 0
+  this._printedBegin = false
 }
 module.exports = PrettyReporter
 inherits(PrettyReporter, Transform)
@@ -26,11 +29,21 @@ PrettyReporter.prototype._transform = function(chunk, encoding, done) {
   }
 
   switch (chunk.type) {
+    case 'multiple':
+      this._multiple = chunk.amount
+      this._multipleCounter = 0
+      break
     case 'begin':
+      if (this._printedBegin) break
+      this._printedBegin = true
       log(chalk.blue('Lightfoot waiting for results...\n'))
       break
     case 'testStart':
-      log('# ' + chunk.name)
+      var msg = '# ' + chunk.name
+      if (chunk.capabilities && chunk.capabilities.browserName) {
+        msg += ' in ' + chunk.capabilities.browserName
+      }
+      log(msg)
       break
     case 'testDone':
       if (chunk.failed > 0) {
@@ -81,23 +94,26 @@ PrettyReporter.prototype._transform = function(chunk, encoding, done) {
       log(msg)
       break
     case 'done':
-      msg += '\n'
-      if (chunk.failed > 0) {
-        msg += chalk.inverse.red(new Array(10).join('!'))
-        msg += chalk.inverse.red(' FAILED ')
-        msg += chalk.inverse.red(new Array(10).join('!'))
-      } else {
-        testSucceeded = true
-        msg += chalk.inverse.green(new Array(10).join('*'))
-        msg += chalk.inverse.green(' SUCCESS ')
-        msg += chalk.inverse.green(new Array(10).join('*'))
+      ++this._multipleCounter
+      if (this._multiple === this._multipleCounter) {
+        msg += '\n'
+        if (chunk.failed > 0) {
+          msg += chalk.inverse.red(new Array(10).join('!'))
+          msg += chalk.inverse.red(' FAILED ')
+          msg += chalk.inverse.red(new Array(10).join('!'))
+        } else {
+          testSucceeded = true
+          msg += chalk.inverse.green(new Array(10).join('*'))
+          msg += chalk.inverse.green(' SUCCESS ')
+          msg += chalk.inverse.green(new Array(10).join('*'))
+        }
+        msg += '\n\n'
+        msg += chalk.green(chunk.passed + ' passed') + ' / '
+        msg += chalk.yellow(skipped + ' skipped') + ' / '
+        msg += chalk.red(chunk.failed + ' failed') + '\n'
+        msg += chalk.gray('Ran ' + chunk.total + ' tests in ' + prettyMs(chunk.runtime || 0))
+        log(msg)
       }
-      msg += '\n\n'
-      msg += chalk.green(chunk.passed + ' passed') + ' / '
-      msg += chalk.yellow(skipped + ' skipped') + ' / '
-      msg += chalk.red(chunk.failed + ' failed') + '\n'
-      msg += chalk.gray('Ran ' + chunk.total + ' tests in ' + prettyMs(chunk.runtime))
-      log(msg)
       break
   }
   done()
