@@ -76,6 +76,26 @@ lightfoot.run(function(code) {
 lightfoot.pipe(require('lightfoot/reporters/tap')()).pipe(process.stdout)
 ```
 
+### running multiple sessions concurrently
+
+There is a built in helper to run mutliple sessions concurrently:
+
+```js
+var runAll = require('lightfoot').runAll
+// Run each of these sessions with 2 at a time concurrently
+runAll([
+  { url: 'http://localhost:3000/test.html?module=one.js', browserName: 'chrome' },
+  { url: 'http://localhost:3000/test.html?module=two.js', browserName: 'chrome' },
+  { url: 'http://localhost:3000/test.html?module=one.js', browserName: 'firefox' },
+  { url: 'http://localhost:3000/test.html?module=two.js', browserName: 'firefox' },
+], 2, function(codes) {
+  // Exit with the greatest exit code
+  process.exit(codes.reduce(function(code, last) {
+    return (code > last) ? code : last;
+  }, 0))
+})
+```
+
 ### using with sauce labs
 
 Install and run [Sauce Connect](https://docs.saucelabs.com/reference/sauce-connect/)
