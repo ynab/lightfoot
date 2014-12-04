@@ -16,6 +16,7 @@
   "author": "YouNeedABudget.com <opensource@youneedabudget.com> (http://youneedabudget.com)",
   "license": "MIT",
   "dependencies": {
+    "async": "^0.9.0",
     "chalk": "^0.5.1",
     "leadfoot": "^1.1.1",
     "merge-stream": "^0.1.6",
