@@ -122,6 +122,7 @@ Lightfoot.prototype._transform = function(chunk, encoding, done) {
 }
 
 Lightfoot.prototype._writePayload = function(payload) {
+  if (this._done) return
   this.write(xtend({
     capabilities: this._cfg,
   }, payload))
