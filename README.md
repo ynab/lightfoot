@@ -114,6 +114,7 @@ require('lightfoot')({
 Now through all kinds of mad science, your tests served locally are ran in a real browser at Sauce Labs and reported to your terminal.
 
 ## Release History
+* 1.4.0 - Ability to specify capabilities. Helper for running multiple sessions concurrently. Pipe errors to reporter when they occur.
 * 1.3.1 - Add repository field to package.json. Ensure assertions on pretty reporter go on their own line.
 * 1.3.0 - Add pretty reporter
 * 1.2.1 - Avoid multiple `done()` calls on finish
