@@ -11,6 +11,10 @@ function PrettyReporter(verbose) {
   this._multiple = 0
   this._multipleCounter = 0
   this._printedBegin = false
+  this._total = 0
+  this._passed = 0
+  this._failed = 0
+  this._skipped = 0
 }
 module.exports = PrettyReporter
 inherits(PrettyReporter, Transform)
@@ -39,6 +43,7 @@ PrettyReporter.prototype._transform = function(chunk, encoding, done) {
       log(chalk.blue('Lightfoot waiting for results...\n'))
       break
     case 'testStart':
+      this._total++
       var msg = '# ' + chunk.name
       if (chunk.capabilities && chunk.capabilities.browserName) {
         msg += ' in ' + chunk.capabilities.browserName
@@ -47,6 +52,7 @@ PrettyReporter.prototype._transform = function(chunk, encoding, done) {
       break
     case 'testDone':
       if (chunk.failed > 0) {
+        this._failed++
         msg += chalk.red('✖ ') + chunk.name + '\n'
         lastAssertions.forEach(function (assert) {
           msg += '  '
@@ -65,10 +71,11 @@ PrettyReporter.prototype._transform = function(chunk, encoding, done) {
         msg += chalk.cyan('END: ' + new Array(80).join('=') + '\n') + '\n'
       } else {
         if (chunk.name.indexOf('(SKIPPED)') !== -1) {
-          skipped++
+          this._skipped++
           msg += chalk.yellow('- ') + chalk.gray(chunk.name)
           if (self.verbose) msg += '\n'
         } else {
+          this._passed++
           msg += chalk.green('✔ ') + chunk.name + ' ' + chalk.gray(prettyMs(chunk.runtime))
           lastAssertions.forEach(function (assert) {
             if (!self.verbose || !assert.message) return
@@ -97,7 +104,7 @@ PrettyReporter.prototype._transform = function(chunk, encoding, done) {
       ++this._multipleCounter
       if (this._multiple === this._multipleCounter) {
         msg += '\n'
-        if (chunk.failed > 0) {
+        if (this._failed > 0) {
           msg += chalk.inverse.red(new Array(10).join('!'))
           msg += chalk.inverse.red(' FAILED ')
           msg += chalk.inverse.red(new Array(10).join('!'))
@@ -108,10 +115,10 @@ PrettyReporter.prototype._transform = function(chunk, encoding, done) {
           msg += chalk.inverse.green(new Array(10).join('*'))
         }
         msg += '\n\n'
-        msg += chalk.green(chunk.passed + ' passed') + ' / '
-        msg += chalk.yellow(skipped + ' skipped') + ' / '
-        msg += chalk.red(chunk.failed + ' failed') + '\n'
-        msg += chalk.gray('Ran ' + chunk.total + ' tests in ' + prettyMs(chunk.runtime || 0))
+        msg += chalk.green(this._passed + ' passed') + ' / '
+        msg += chalk.yellow(this._skipped + ' skipped') + ' / '
+        msg += chalk.red(this._failed + ' failed') + '\n'
+        msg += chalk.gray('Ran ' + this._total + ' tests in ' + prettyMs(chunk.runtime || 0))
         log(msg)
       }
       break
