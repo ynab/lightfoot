@@ -1,6 +1,6 @@
 {
   "name": "lightfoot",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Run your own tests in a real browser with selenium then stream the results out.",
   "main": "index.js",
   "bin": {
