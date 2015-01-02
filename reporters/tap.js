@@ -9,6 +9,7 @@ function TapReporter() {
   this._multiple = 0
   this._multipleCounter = 0
   this._printedBegin = false
+  this._lastAssertions = []
 }
 module.exports = TapReporter
 inherits(TapReporter, Transform)
@@ -38,18 +39,24 @@ TapReporter.prototype._transform = function(chunk, encoding, done) {
       }
       log(msg)
       break
-    case 'log':
-      var msg = ''
-      msg += (chunk.result) ? 'ok ' : 'not ok '
-      msg += ++this._testNum
-      msg += ' ' + (chunk.message || '(unnamed assert)')
-      log(msg)
-      if (!chunk.result) {
-        log('  ---')
-        if (chunk.expected) log('    expected: ' + chunk.expected)
-        if (chunk.actual) log('    actual: ' + chunk.actual)
-        log('  ...')
-      }
+    case 'testDone':
+      self._lastAssertions.forEach(function (assert) {
+        var msg = ''
+        msg += (assert.result) ? 'ok ' : 'not ok '
+        msg += ++self._testNum
+        msg += ' ' + (assert.message || '(unnamed assert)')
+        log(msg)
+        if (!assert.result) {
+          log('  ---')
+          if (assert.expected) log('    expected: ' + assert.expected)
+          if (assert.actual) log('    actual: ' + assert.actual)
+          log('  ...')
+        }
+      })
+      self._lastAssertions = []
+      break
+    case 'assertion':
+      self._lastAssertions.push(chunk)
       break
     case 'error':
       log('\n# ERROR: ' + chunk.error.message + '\n')

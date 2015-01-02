@@ -13,7 +13,8 @@
     { type: 'testStart', name: 'a test test' },
     { type: 'log', result: true, message: 'assertion has passed', name: 'should work' },
     { type: 'testStart', name: 'another test' },
-    { type: 'log', result: true, message: 'assertion has passed too', name: 'should work too' },
+    { type: 'assertion', result: true, message: 'assertion has passed too', name: 'should work too' },
+    { type: 'testDone', name: 'another test' },
     { type: 'done', passed: 10, failed: 0 },
   ]
   function sendMessage() {

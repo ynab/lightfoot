@@ -15,13 +15,11 @@ function PrettyReporter(verbose) {
   this._passed = 0
   this._failed = 0
   this._skipped = 0
+  this._lastConsoleLogs = []
+  this._lastAssertions = []
 }
 module.exports = PrettyReporter
 inherits(PrettyReporter, Transform)
-
-var lastAssertions = []
-var lastConsoleLogs = []
-var skipped = 0
 
 PrettyReporter.prototype._transform = function(chunk, encoding, done) {
   var self = this
@@ -54,7 +52,7 @@ PrettyReporter.prototype._transform = function(chunk, encoding, done) {
       if (chunk.failed > 0) {
         this._failed++
         msg += chalk.red('✖ ') + chunk.name + '\n'
-        lastAssertions.forEach(function (assert) {
+        self._lastAssertions.forEach(function (assert) {
           msg += '  '
           msg += (assert.result) ? chalk.green('✔ ') : chalk.red('✖ ')
           msg += assert.message || ''
@@ -65,7 +63,7 @@ PrettyReporter.prototype._transform = function(chunk, encoding, done) {
           msg += '\n'
         })
         msg += chalk.cyan('START: ' + new Array(80).join('=')) + '\n'
-        msg += lastConsoleLogs.filter(function (log) {
+        msg += self._lastConsoleLogs.filter(function (log) {
           return !!log
         }).join('\n') + '\n'
         msg += chalk.cyan('END: ' + new Array(80).join('=') + '\n') + '\n'
@@ -77,7 +75,7 @@ PrettyReporter.prototype._transform = function(chunk, encoding, done) {
         } else {
           this._passed++
           msg += chalk.green('✔ ') + chunk.name + ' ' + chalk.gray(prettyMs(chunk.runtime))
-          lastAssertions.forEach(function (assert) {
+          self._lastAssertions.forEach(function (assert) {
             if (!self.verbose || !assert.message) return
             msg += '\n  '
             msg += chalk.green('✔ ') + chalk.gray(assert.message || '')
@@ -86,11 +84,14 @@ PrettyReporter.prototype._transform = function(chunk, encoding, done) {
         }
       }
       log(msg)
-      lastConsoleLogs = []
-      lastAssertions = []
+      self._lastConsoleLogs = []
+      self._lastAssertions = []
+      break
+    case 'assertion':
+      self._lastAssertions.push(chunk)
       break
     case 'log':
-      lastAssertions.push(chunk)
+      self._lastConsoleLogs.push(chunk.message)
       break
     case 'error':
       msg += '\n'

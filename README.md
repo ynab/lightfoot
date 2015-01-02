@@ -52,7 +52,7 @@ function notifyLightfoot(type, payload) {
 QUnit.begin(function(data) { notifyLightfoot('begin', data) })
 QUnit.done(function(data) { notifyLightfoot('done', data) })
 QUnit.testDone(function(data) { notifyLightfoot('testDone', data) })
-QUnit.log(function(data) { notifyLightfoot('log', data) })
+QUnit.log(function(data) { notifyLightfoot('assertion', data) })
 ```
 
 and now lightfoot will know and report more info about the lifecycle of your test suite.

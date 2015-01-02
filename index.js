@@ -46,7 +46,6 @@ Lightfoot.prototype.run = function(done) {
   self._server.createSession(this._cfg).then(function(session) {
     self.session = session
     self.sessionId = session.sessionId
-    var lastConsoleLogs = []
 
     // Timeout for the entire test suite
     self._timeoutInterval = setTimeout(function () {
@@ -58,9 +57,10 @@ Lightfoot.prototype.run = function(done) {
 
     function pollForResult() {
       return session.getLogsFor('browser').then(function(logs) {
-        lastConsoleLogs.push(logs.map(function(log) {
-          return log.message;
-        }).join('\n'))
+        logs.forEach(function(log) {
+          log.type = 'log'
+          self._writePayload(log)
+        })
         return session.execute('return ' + self.varName).then(function(results) {
           if (!Array.isArray(results)) results = [results]
           for (var i = self._pointer; i < results.length; i++) {
