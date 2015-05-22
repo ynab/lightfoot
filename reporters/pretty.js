@@ -74,7 +74,7 @@ PrettyReporter.prototype._transform = function(chunk, encoding, done) {
           if (self.verbose) msg += '\n'
         } else {
           this._passed++
-          msg += chalk.green('✔ ') + chunk.name + ' ' + chalk.gray(prettyMs(chunk.runtime))
+          msg += chalk.green('✔ ') + chunk.name + ' ' + chalk.gray(prettyMs(chunk.runtime || 0))
           self._lastAssertions.forEach(function (assert) {
             if (!self.verbose || !assert.message) return
             msg += '\n  '
