@@ -26,6 +26,7 @@ function Lightfoot(cfg) {
   this.browserName = this._cfg.browserName
   this.varName = this._cfg.varName
   this.timeout = this._cfg.timeout
+  this.pollInterval = this._cfg.pollInterval
   this.session = null
   this._done = false
   this._server = null
@@ -69,7 +70,10 @@ Lightfoot.prototype.run = function(done) {
           self._pointer = results.length
         })
       }).finally(function() {
-        if (!self._done) process.nextTick(pollForResult)
+        if (!self._done) {
+          if (self.pollInterval) setTimeout(pollForResult, self.pollInterval)
+          else process.nextTick(pollForResult)
+        }
       })
     }
     session.get(self.url).then(pollForResult)
