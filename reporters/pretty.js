@@ -8,7 +8,7 @@ function PrettyReporter(verbose) {
   if (!(this instanceof PrettyReporter)) return new PrettyReporter(verbose)
   var cfg = {objectMode: true}
   Transform.call(this, cfg)
-  this._multiple = 0
+  this._multiple = 1
   this._multipleCounter = 0
   this._printedBegin = false
   this._total = 0
